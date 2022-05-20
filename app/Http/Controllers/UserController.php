@@ -33,8 +33,9 @@ class UserController extends Controller
                 'email' => $req->email,
                 'gender' => $req->gender,
                 'password' => Hash::make($req->password),
-                'confirm_password' => Hash::make($req->confirm_password)
+                'confirm_password' => Hash::make($req->confirm_password)  
             ]);
+
             $message='Signup Registration Successful';
             $status=200;
            }else{
