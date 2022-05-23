@@ -51,32 +51,37 @@ class ProfileController extends Controller
 }
 
 //function to login
+
 public function login(Request $req){
-    $validation=Validator::make($req->all(),[
-        'email' => 'required',
-        'password' => 'required',
+
+    $attr = $req->validate([
+        'email' => 'required|string|email|',
+        'password' => 'required'
     ]);
 
-    $credentials=$req->only('email','password');
-
-   //check email
-   if(!Auth::attempt(['email' => $req->email, 'password' => $req->password])){
-        $response=[
-            'message' => 'Invalid Credentials'
+   if(!Auth::attempt($attr)){
+   $response=[
+            'message' => 'Invalid Credentials',
+            'status' => 'Error'
         ];
-    return response($response, 400);
-   }
-
+     return response($response, 400);
+   }else{
     $user=User::where('email',$req->email)->first();
     $token=$user->createToken('myapptoken')->plainTextToken;
 
     $response = [
         'user'=> $user,
-        'token' => $token
+        'token' => $token,
+        'status' => 'success'
     ];
 
     return response($response, 200);
+   }
+    
+
+
 }
+
 
 //endpoint to get a single user record
 public function getUsers(Request $req, $id){
