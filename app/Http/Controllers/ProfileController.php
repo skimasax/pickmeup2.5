@@ -25,14 +25,14 @@ class ProfileController extends Controller
                 'lastname' => $req->lastname,
                 'email' => $req->email,
                 'gender' => $req->gender,
-                'password' => Hash::make($req->passsword),
+                'password' => Hash::make($req->password),
                 'confirm_password' => Hash::make($req->confirm_password)
             ]);
 
             $token=$data->createToken('myapptoken')->plainTextToken;
 
             $response = [
-                'user'=> $data,
+                'data'=> $data,
                 'token' => $token
             ];
 
@@ -55,9 +55,10 @@ class ProfileController extends Controller
 public function login(Request $req){
 
     $attr = $req->validate([
-        'email' => 'required|string|email|',
+        'email' => 'required|string|email',
         'password' => 'required'
     ]);
+
 
    if(!Auth::attempt($attr)){
    $response=[
@@ -70,9 +71,9 @@ public function login(Request $req){
     $token=$user->createToken('myapptoken')->plainTextToken;
 
     $response = [
-        'user'=> $user,
+        'data'=> $user,
         'token' => $token,
-        'status' => 'success'
+        'message' => 'success'
     ];
 
     return response($response, 200);
@@ -87,7 +88,7 @@ public function login(Request $req){
 public function getUsers(Request $req, $id){
         $data=User::where('id',$id)->first();
         $response=[
-            'user' =>$data,
+            'data' =>$data,
         ];
 
         return response($response, 200);
@@ -95,7 +96,8 @@ public function getUsers(Request $req, $id){
 }
 
 //function to update user
-public function update(Request $req, $id){
+public function updateProfile(Request $req, $id){
+
     $validation=Validator::make($req->all(),[
         'firstname' => 'required',
         'lastname' => 'required',
@@ -103,18 +105,44 @@ public function update(Request $req, $id){
         'gender' => 'required',
     ]);
 
-    $data=User::where('id',$id)->update([
+    User::where('id',$id)->update([
         'firstname' => $req->firstname,
         'lastname' => $req->lastname,
         'email' => $req->email,
         'gender' => $req->gender,
     ]);
 
+        $data=User::where('id',$id)->first();
+
     $response = [
-        'user'=> $data,
+        'data'=> $data,
+        'message' => 'success'
     ];
 
     return response($response, 200);
 }
+
+//function forgot password
+public function forgotPassword(Request $req, $id){
+    $validator=Validator::make($req->all(),[
+        'password' => 'required',
+        'confirm_password' => 'required'
+    ]);
+
+    $data=User::where('id',$id)->update([
+        'password' => Hash::make($req->password),
+        'confirm_password'=>Hash::make($req->password),
+    ]);
+
+    $response=[
+        'message' => 'Password Changed Successfully',
+        'status' => 'success'
+    ];
+
+    return response($response, 200);
+
+}
+
+
 
 }
