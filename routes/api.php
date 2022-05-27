@@ -8,6 +8,7 @@ use Illuminate\Support\Facades\Route;
 Route::post('signup',[ProfileController::class, 'signup'])->name('signup');
 Route::post('login',[ProfileController::class, 'login'])->name('login');
 Route::post('/message',[HomeController::class, 'message'])->name('messsage');
+Route::post('/userprofile/{id}',[ProfileController::class, 'userProfile'])->name('user profile');
 
 
 //protected Routes

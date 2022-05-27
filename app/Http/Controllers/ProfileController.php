@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Traits\Customers;
 use Illuminate\Http\Request;
 use App\Models\User;
 use Illuminate\Http\Response;
@@ -10,6 +11,9 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Validator;
 class ProfileController extends Controller
 {
+    use Customers;
+
+
     public function signup(Request $req){
             $validation=Validator::make($req->all(),[
                 'firstname' => 'required',
@@ -143,6 +147,15 @@ public function forgotPassword(Request $req, $id){
 
 }
 
+//function to get user details
+    public function userProfile(Request $req, $id){
+        $data=$this->getdetails($id);
+        $response=[
+            'data' => $data,
+        ];
+        return response($response, 200);
+
+    }
 
 
 }
